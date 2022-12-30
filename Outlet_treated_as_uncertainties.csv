@@ -1,0 +1,7 @@
+Outlet,Uncertainty_1,Uncertainty_2
+Outlet_1,"constant_flow_rate, 0","constant_flow_rate, 1"
+Outlet_2,"constant_flow_rate, 0","constant_flow_rate, 1.5"
+Outlet_3,"constant_flow_rate, 0","constant_flow_rate, 2"
+Outlet_4,"constant_flow_rate, 0","constant_flow_rate, 0"
+Outlet_5,"constant_flow_rate, 0","constant_flow_rate, 0.5"
+Outlet_6,"constant_flow_rate, 0","constant_flow_rate, 1"
