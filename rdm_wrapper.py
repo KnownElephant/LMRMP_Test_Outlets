@@ -50,4 +50,4 @@ def rdm_wrapper(outlet_uncertainty_path, outlet_uncertainty_configuration, **lev
 
     
 
-x=rdm_wrapper("Outlet_treated_as_uncertainties.csv", "Uncertainty_2", Outlet_1=4, Outlet_7=16)
+x=rdm_wrapper("Outlet_treated_as_uncertainties.csv", "Uncertainty_2", Outlet_1=4, Outlet_7=15)
