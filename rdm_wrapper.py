@@ -27,9 +27,18 @@ def rdm_wrapper(outlet_uncertainty_path, outlet_uncertainty_configuration, **lev
             #overwrites the parameter for the specified outlet
             #currently only works for constant flow style outlet
             #additional preprocessing will be needed for later weirs and rating curves
-            param_strings=outlet_uncertainty_data.at[key].split(", ")
-            param_strings_new=param_strings[0]+", "+str(value)
-            outlet_uncertainty_data.at[key]=param_strings_new
+            param_strings=outlet_uncertainty_data.at[key].split("; ")
+            if param_strings[0]=="off":
+                outlet_uncertainty_data.at[key]="off"
+            elif param_strings[0]=="constant_flow_rate":
+                outlet_uncertainty_data.at[key]=param_strings[0]+"; "+str(value)
+            elif param_strings[0]=="rating_curve":
+                if len(value)==len(param_strings[2].split(", ")):
+                    outlet_uncertainty_data.at[key]=param_strings[0]+"; "+param_strings[1]+"; "+str(value)
+                else:
+                    outlet_uncertainty_data.at[key]="off"
+            elif param_strings[0]=="lateral_weir":
+                outlet_uncertainty_data.at[key]=param_strings[0]+"; "+param_strings[1]+"; "+str(value)+"; "+param_strings[3]+"; "+param_strings[4]
             
     #writes the processed data to a file
     outlet_uncertainty_data.to_csv("temp.csv")
@@ -41,4 +50,4 @@ def rdm_wrapper(outlet_uncertainty_path, outlet_uncertainty_configuration, **lev
 
     
 
-x=rdm_wrapper("Outlet_treated_as_uncertainties.csv", "Uncertainty_1", Outlet_1=3, Outlet_7=5)
+x=rdm_wrapper("Outlet_treated_as_uncertainties.csv", "Uncertainty_2", Outlet_1=4, Outlet_7=16)
