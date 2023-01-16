@@ -2,8 +2,9 @@ import pandas as pd
 
 #filler code, takes an outlet parameter list specified as a .csv file and turns it into the appropriate
 #file type for running hec ras
-def preprocess_dss(outlet_file):
-    print("turning "+outlet_file+"into csv")
+def preprocess_dss(hydro_file, outlet_file):
+    print("turning"+hydro_file+" into ras file")
+    print("turning "+outlet_file+" into ras file")
 
 #filler code for running hec ras once the appropriate dss files have been written
 def run_hec_ras():
@@ -17,8 +18,12 @@ def run_hec_ras():
 #   *outlet_uncertainty_configuration selects which column in outlet_uncertainty_path to use for parameterizing
 #   this assumes that uncertainties will be more about configurations (leaky vs. non-leaky) instead of ranges of values
 #it also takes an arbitrary number of named lever inputs, which overwrite the parameters for the named outlet
-def rdm_wrapper(outlet_uncertainty_path, outlet_uncertainty_configuration, **levers):
+def rdm_wrapper(hydro_year, hydro_type, outlet_uncertainty_path, outlet_uncertainty_configuration, **levers):
     #reads in the preprocessed data - i think eventually we will want to connect this to air table
+    hydro_data = pd.read_csv("Hydrograph_year_"+str(hydro_year)+".csv", index_col=0)[hydro_type]
+    hydro_data.name = "Hydrograph"
+    hydro_data.to_csv("hydro_temp.csv")
+
     outlet_uncertainty_data = pd.read_csv(outlet_uncertainty_path, index_col=0)[outlet_uncertainty_configuration]
     
     #loops through provided level arguments
@@ -39,15 +44,15 @@ def rdm_wrapper(outlet_uncertainty_path, outlet_uncertainty_configuration, **lev
                     outlet_uncertainty_data.at[key]="off"
             elif param_strings[0]=="lateral_weir":
                 outlet_uncertainty_data.at[key]=param_strings[0]+"; "+param_strings[1]+"; "+str(value)+"; "+param_strings[3]+"; "+param_strings[4]
-            
+    outlet_uncertainty_data.name = "Parameters"
     #writes the processed data to a file
-    outlet_uncertainty_data.to_csv("temp.csv")
+    outlet_uncertainty_data.to_csv("outlet_temp.csv")
     #reads the processed data file and turns it into the appropriate hec ras file type
     #the handoff doesn't necessairly need to involve a temp file I just thought it was a helpful demo
-    preprocess_dss("temp.csv")
+    preprocess_dss("hydro_temp.csv", "outlet_temp.csv")
     #run hec-ras using the preprocessed file
     run_hec_ras()
 
     
 
-x=rdm_wrapper("Outlet_treated_as_uncertainties.csv", "Uncertainty_2", Outlet_1=4, Outlet_7=15)
+x=rdm_wrapper(10, "Wet", "Outlet_treated_as_uncertainties.csv", "Uncertainty_2", Outlet_1=4, Outlet_7=15)
